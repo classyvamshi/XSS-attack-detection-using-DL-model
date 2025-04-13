@@ -1,4 +1,4 @@
-# XSS-attack-detection-using-DL-model 🚀
+# Cross site scripting (XSS) detection using DL model 🚀
 
 A hybrid deep learning + rule-based system to detect Cross-Site Scripting (XSS) attacks in real time using a Bidirectional LSTM (BiLSTM) neural network and regex patterns. Built with FastAPI backend and an interactive HTML frontend.
 
