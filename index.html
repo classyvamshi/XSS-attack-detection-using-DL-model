@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI-Powered XSS Attack Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 90%;
+            margin: 20px auto;
+            background: var(--card-background);
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .result.safe {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .result.danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>AI-Powered XSS Attack Detector</h1>
+        <p>Advanced machine learning model to detect potential XSS attacks</p>
+    </div>
+    
+    <div class="input-container">
+        <textarea id="inputText" placeholder="Enter or paste your input to analyze for potential XSS attacks..."></textarea>
+    </div>
+    
+    <button id="analyzeButton">Analyze Input</button>
+
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Analyzing input...</p>
+    </div>
+
+    <div class="result" id="resultArea">
+        <div id="resultText"></div>
+        <div class="confidence-bar">
+            <div class="confidence-fill" id="confidenceBar"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get references to elements
+        const analyzeButton = document.getElementById('analyzeButton');
+        const inputText = document.getElementById('inputText');
+        const resultArea = document.getElementById('resultArea');
+        const resultText = document.getElementById('resultText');
+        const loading = document.getElementById('loading');
+        const confidenceBar = document.getElementById('confidenceBar');
+
+        // Add event listener to button
+        analyzeButton.addEventListener('click', async function() {
+            // Get and sanitize input
+            const text = inputText.value.trim();
+            
+            if (!text) {
+                showResult('danger', 'Please enter some text to analyze');
+                return;
+            }
+
+            // Show loading state
+            loading.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            try {
+                // Make API request
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sentence: text })
+                });
+
+                const data = await response.json();
+
+                // Hide loading state
+                loading.style.display = 'none';
+                resultArea.style.display = 'block';
+
+                if (data.error) {
+                    showResult('danger', `❌ Error: ${data.error}`);
+                } else {
+                    const confidence = data.prediction === 1 ? data.confidence : 1 - data.confidence;
+                    const percentage = (confidence * 100).toFixed(2);
+                    
+                    let resultMessage = data.prediction === 1 
+                        ? `🚨 XSS Attack Detected!`
+                        : `✅ Input is Safe`;
+                    
+                    if (data.has_pattern) {
+                        resultMessage += '\n⚠️ XSS patterns detected in input';
+                    }
+                    
+                    resultMessage += `\nConfidence: ${percentage}%`;
+                    
+                    showResult(
+                        data.prediction === 1 ? 'danger' : 'safe',
+                        resultMessage,
+                        percentage
+                    );
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showResult('danger', '❌ Error: Failed to connect to the server');
+            }
+        });
+
+        // Helper function to show results
+        function showResult(type, message, confidence = 0) {
+            resultArea.className = `result ${type}`;
+            resultText.innerText = message;
+            confidenceBar.style.width = `${confidence}%`;
+            resultArea.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
