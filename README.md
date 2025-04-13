@@ -83,4 +83,34 @@ The current system was trained on a dataset of approximately 13,686 labeled samp
 - Continuous Learning Pipeline: As new XSS samples are encountered, an active learning framework can be integrated for automatic retraining and model updates over time.
 
 
+## XSS Attack  Flowchart
+
+![image](https://github.com/user-attachments/assets/cfab94fa-bca4-43eb-ba34-0669f0cd023d)
+
+## Block Diagram of BiLSTM Model
+
+![image](https://github.com/user-attachments/assets/8dc88346-4f0b-4e8f-990d-cff3702e1a47)
+
+## Results of the BiLSTM  model
+
+ - Model Accuracy vs Model Loss
+
+ ![image](https://github.com/user-attachments/assets/69bd1691-3f28-4c9f-b241-c0cdd4ba13a8)
+
+ - Test Accuracy
+
+   ![image](https://github.com/user-attachments/assets/02af4224-dfd6-4320-866d-6d3d458f768f)
+
+ - Classification Report
+
+ ![image](https://github.com/user-attachments/assets/60ba36cd-2ec5-41a7-8581-d894871356ba)
+
+
+## User Interface
+
+![image](https://github.com/user-attachments/assets/324cff65-f99f-4e7e-9146-7ba032063b54)
+
+
+
+
 
