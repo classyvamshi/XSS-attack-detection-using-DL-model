@@ -81,3 +81,6 @@ The current system was trained on a dataset of approximately 13,686 labeled samp
 - Scalable Deployment: Containerize and deploy the app using services like Docker, Heroku, AWS, or Google Cloud Platform for broader real-time access and load handling.
 
 - Continuous Learning Pipeline: As new XSS samples are encountered, an active learning framework can be integrated for automatic retraining and model updates over time.
+
+
+
