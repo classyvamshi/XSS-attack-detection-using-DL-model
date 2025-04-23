@@ -111,6 +111,15 @@ The current system was trained on a dataset of approximately 13,686 labeled samp
 ![image](https://github.com/user-attachments/assets/324cff65-f99f-4e7e-9146-7ba032063b54)
 
 
+## ✨ Team Members
+
+
+    Alajangi Venkata Satya 
+    K N Lakshmi
+    K Hemavardhan Reddy
+    K V Vamshidhar Reddy
+    DR. Pradeep Menon
+  
 
 
 
